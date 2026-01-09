@@ -14,6 +14,8 @@ mvn package
 java -jar target/hawkeye-coding-task-1.0-SNAPSHOT.jar
 ```
 
+The main game is ran from CardGameApp.java
+
 ## The Game
 
 **Higher/Lower** is pretty straightforward - you see a card, and you guess if the next one will be higher or lower. Get it right, you score a point and keep going. Get it wrong, game over. If the cards are equal, it's a push and you continue without scoring.
@@ -92,31 +94,6 @@ The architecture supports multiple games - that's why there's a main menu. Addin
 
 There are no tests right now, which isn't great. The models are pure logic with no UI dependencies, so they'd be easy to test. Things like "does the deck actually have 52 cards?", "does shuffling produce different orders?", "does scoring work correctly?" - all should be verified.
 
----
-
-## Project Structure
-
-```
-src/main/java/
-├── CardGameApp.java              # Entry point
-├── controller/
-│   ├── MainController.java       # Navigation between screens
-│   └── HigherLowerController.java
-├── model/
-│   ├── Card.java                 # Single card
-│   ├── Deck.java                 # 52-card deck with shuffle
-│   ├── Suit.java                 # Hearts, Diamonds, Clubs, Spades
-│   ├── Rank.java                 # 2-10, J, Q, K, A
-│   └── HigherLowerModel.java     # Game state and rules
-└── view/
-    ├── MainMenuView.java
-    ├── HigherLowerView.java
-    ├── RulesView.java
-    ├── CardPanel.java            # Custom card rendering
-    └── StyleUtils.java           # Colors, fonts, button styles
-```
-
----
 
 ## Final Thoughts
 
