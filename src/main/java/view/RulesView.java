@@ -39,6 +39,7 @@ public class RulesView extends JPanel {
         JPanel contentPanel = new JPanel();
         contentPanel.setOpaque(false);
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+        contentPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         
         // Higher/Lower rules
         JPanel higherLowerPanel = createRuleSection(
@@ -56,25 +57,8 @@ public class RulesView extends JPanel {
             StyleUtils.PRIMARY_LIGHT
         );
         
-        // Blackjack rules
-        JPanel blackjackPanel = createRuleSection(
-            "BLACKJACK",
-            new String[]{
-                "• You and the dealer each receive 2 cards",
-                "• One dealer card remains face-down",
-                "• Card values: 2-10 (face value), J/Q/K=10, A=1 or 11",
-                "• HIT: Draw another card",
-                "• STAND: Keep your current hand",
-                "• Going over 21 = BUST (automatic loss)",
-                "• Dealer must hit on 16 or less, stand on 17+",
-                "• Closest to 21 without busting wins!"
-            },
-            StyleUtils.SECONDARY_COLOR
-        );
-        
         contentPanel.add(higherLowerPanel);
         contentPanel.add(Box.createVerticalStrut(30));
-        contentPanel.add(blackjackPanel);
         
         // Scroll pane for content
         JScrollPane scrollPane = new JScrollPane(contentPanel);
@@ -82,42 +66,59 @@ public class RulesView extends JPanel {
         scrollPane.getViewport().setOpaque(false);
         scrollPane.setBorder(null);
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
-        
-        JPanel wrapperPanel = new JPanel(new GridBagLayout());
-        wrapperPanel.setOpaque(false);
-        wrapperPanel.add(scrollPane);
+        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         
         mainPanel.add(topBar, BorderLayout.NORTH);
-        mainPanel.add(wrapperPanel, BorderLayout.CENTER);
+        mainPanel.add(scrollPane, BorderLayout.CENTER);
         
         add(mainPanel, BorderLayout.CENTER);
     }
     
     private JPanel createRuleSection(String title, String[] rules, Color accentColor) {
-        JPanel panel = new JPanel();
-        panel.setBackground(new Color(255, 255, 255, 10));
-        panel.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(accentColor, 2),
-            BorderFactory.createEmptyBorder(20, 25, 20, 25)
-        ));
+        JPanel panel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2d = (Graphics2D) g.create();
+                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                
+                // Dark semi-transparent background
+                g2d.setColor(new Color(30, 50, 90, 200));
+                g2d.fillRoundRect(0, 0, getWidth(), getHeight(), 15, 15);
+                
+                // Border
+                g2d.setColor(accentColor);
+                g2d.setStroke(new BasicStroke(2));
+                g2d.drawRoundRect(1, 1, getWidth() - 3, getHeight() - 3, 15, 15);
+                
+                g2d.dispose();
+            }
+        };
+        panel.setOpaque(false);
+        panel.setBorder(BorderFactory.createEmptyBorder(25, 30, 25, 30));
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setMaximumSize(new Dimension(600, 400));
+        panel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
+        // Set preferred size to ensure visibility
+        panel.setPreferredSize(new Dimension(550, 320));
+        panel.setMaximumSize(new Dimension(600, 350));
+        panel.setMinimumSize(new Dimension(400, 280));
         
         JLabel titleLabel = new JLabel(title);
-        titleLabel.setFont(new Font("Georgia", Font.BOLD, 22));
+        titleLabel.setFont(new Font("Georgia", Font.BOLD, 24));
         titleLabel.setForeground(accentColor);
         titleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         
         panel.add(titleLabel);
-        panel.add(Box.createVerticalStrut(15));
+        panel.add(Box.createVerticalStrut(20));
         
         for (String rule : rules) {
             JLabel ruleLabel = new JLabel(rule);
-            ruleLabel.setFont(new Font("Arial", Font.PLAIN, 15));
+            ruleLabel.setFont(new Font("Arial", Font.PLAIN, 16));
             ruleLabel.setForeground(StyleUtils.TEXT_COLOR);
             ruleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
             panel.add(ruleLabel);
-            panel.add(Box.createVerticalStrut(8));
+            panel.add(Box.createVerticalStrut(10));
         }
         
         return panel;
@@ -125,4 +126,3 @@ public class RulesView extends JPanel {
     
     public JButton getBackButton() { return backButton; }
 }
-
